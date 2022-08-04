@@ -80,7 +80,7 @@ void print_table(table data) //テーブルを表示する関数
     std::cout << "|";
     for (int j = 0; j < data.width(); j++)
     {
-      data.at(i).at(j) ? std::cout << "■" : std::cout << "-";
+      data.at(i).at(j) ? std::cout << "■" : std::cout << " ";
     }
     std::cout << "|" << std::endl;
   }
