@@ -162,7 +162,7 @@ table next_gen(table data) //次世代の盤面を作る
 
 int main()
 {
-  table t("glider-gun");
+  table t("galaxy");
   bool runnning = true;
 
   while (runnning)
