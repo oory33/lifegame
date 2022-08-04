@@ -7,7 +7,7 @@
 struct table // tableストラクタの定義
 {
   std::vector<std::vector<bool>> data;
-  table(int N) //初期化・コンストラクタ
+  table(int N) //初期化・コンストラクタ（N*N配列）
   {
     for (int i = 0; i < N; i++)
     {
@@ -18,6 +18,30 @@ struct table // tableストラクタの定義
       }
     }
   };
+
+  table(std::string name)
+  {
+    if (name == "galaxy")
+    {
+      data = {
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0},
+          {0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0},
+          {0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0},
+          {0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0},
+          {0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0},
+          {0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0},
+          {0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}};
+    }
+  };
+
   int width() //メンバ関数定義
   {
     return data.at(0).size();
@@ -26,7 +50,7 @@ struct table // tableストラクタの定義
   {
     return data.size();
   }
-  std::vector<bool> at(int y)
+  std::vector<bool> at(int y) //読み取り専用
   {
     return data.at(y);
   }
@@ -35,11 +59,15 @@ struct table // tableストラクタの定義
     data[y][x] = val;
     return;
   }
+  bool is_same(table data_n)
+  {
+    return data == data_n.data;
+  }
 };
 
 bool at_cell(table data, int x, int y) // dataの(x,y)のセルの状態を返す関数
 {
-  if (x < 0 || y < 0 || x >= data.width() || y >= data.height())
+  if (x < 0 || y < 0 || x >= data.width() || y >= data.height()) // dataのは範囲外ならFalse
   {
     return false;
   }
@@ -80,7 +108,7 @@ void print_table(table data) //テーブルを表示する関数
     std::cout << "|";
     for (int j = 0; j < data.width(); j++)
     {
-      data.at(i).at(j) ? std::cout << "■" : std::cout << " ";
+      data.at(i).at(j) ? std::cout << "■" : std::cout << "-";
     }
     std::cout << "|" << std::endl;
   }
@@ -92,26 +120,29 @@ void print_table(table data) //テーブルを表示する関数
   return;
 }
 
-table next_gen(table &data) //次世代の盤面を作る
+table next_gen(table data) //次世代の盤面を作る
 {
-  for (int i = 0; i < data.height(); i++)
+  table data_n = data;
+  for (int y = 0; y < data.height(); y++)
   {
-    for (int j = 0; j < data.width(); j++)
+    for (int x = 0; x < data.width(); x++)
     {
-      data.replace(j, i, dead_or_alive(data, j, i));
+      data_n.replace(x, y, dead_or_alive(data, x, y));
     }
   }
-  return data;
+  return data_n;
 }
 
 int main()
 {
-  table t(20);
+  table t("galaxy");
+  bool runnning = true;
 
-  while (1)
+  while (runnning)
   {
     print_table(t);
-    t = next_gen(t);
-    std::this_thread::sleep_for(std::chrono::milliseconds(250));
+    table t_n = next_gen(t);
+    t_n.is_same(t) ? runnning = false : t = t_n;
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
 }
