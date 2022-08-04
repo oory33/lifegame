@@ -7,12 +7,12 @@ struct table // tableストラクタの定義
   std::vector<std::vector<bool>> data;
   table(int N) //初期化・コンストラクタ
   {
-    std::vector<std::vector<bool>> data(N, std::vector<bool>(N, false));
     for (int i = 0; i < N; i++)
     {
+      data.emplace_back();
       for (int j = 0; j < N; j++)
       {
-        data.at(i).at(j) = (bool)(rand() % 2);
+        data.at(i).push_back(rand() % 2);
       }
     }
   };
@@ -26,7 +26,9 @@ struct table // tableストラクタの定義
   }
 };
 
-table table_in(10);
+bool dead_or_alive()
+{
+}
 
 int main()
 {
