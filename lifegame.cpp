@@ -81,7 +81,7 @@ struct table // tableストラクタの定義
   {
     return data.at(y);
   }
-  void replace(int x, int y, bool val)
+  void replace(int x, int y, bool val) //代入
   {
     data[y][x] = val;
     return;
