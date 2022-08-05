@@ -4,7 +4,7 @@
 #include <thread>   // thread
 #include <chrono>   // chrono
 
-struct table // tableストラクタの定義
+struct table // tableストラクトの定義
 {
   std::vector<std::vector<bool>> data;
   table(int N) //初期化・コンストラクタ（N*N配列）
@@ -86,13 +86,13 @@ struct table // tableストラクタの定義
     data[y][x] = val;
     return;
   }
-  bool is_same(table data_n)
+  bool is_same(table &data_n)
   {
     return data == data_n.data;
   }
 };
 
-bool at_cell(table data, int x, int y) // dataの(x,y)のセルの状態を返す関数
+bool at_cell(table &data, int x, int y) // dataの(x,y)のセルの状態を返す関数
 {
   if (x < 0 || y < 0 || x >= data.width() || y >= data.height()) // dataのは範囲外ならFalse
   {
@@ -104,14 +104,20 @@ bool at_cell(table data, int x, int y) // dataの(x,y)のセルの状態を返�
   }
 }
 
-int count_surround(table data, int x, int y) //周囲のセルの合計値を返す
+int count_surround(table &data, int x, int y) //周囲のセルの合計値を返す
 {
-  return at_cell(data, x - 1, y) + at_cell(data, x - 1, y - 1) + at_cell(data, x, y - 1) +
-         at_cell(data, x + 1, y - 1) + at_cell(data, x + 1, y) + at_cell(data, x + 1, y + 1) +
-         at_cell(data, x, y + 1) + at_cell(data, x - 1, y + 1);
+  int asw = 0;
+  for (int i = x - 1; i < x + 2; i++)
+  {
+    for (int j = y - 1; j < y + 2; j++)
+    {
+      asw += at_cell(data, i, j);
+    }
+  }
+  return asw - at_cell(data, x, y);
 }
 
-bool dead_or_alive(table data, int x, int y) //周囲のセルを探査し、生存しているセルの周囲が2か3生存ならtrue、それ以外はfalse、死んだセルの周囲が3つならtrue
+bool dead_or_alive(table &data, int x, int y) //周囲のセルを探査し、生存しているセルの周囲が2か3生存ならtrue、それ以外はfalse、死んだセルの周囲が3つならtrue
 {
   if (at_cell(data, x, y)) //セルが生存している場合
   {
@@ -123,7 +129,7 @@ bool dead_or_alive(table data, int x, int y) //周囲のセルを探査し、生
   }
 }
 
-void print_table(table data) //テーブルを表示する関数
+void print_table(table &data) //テーブルを表示する関数、元配列を参照
 {
   for (int i = 0; i < data.width() + 2; i++)
   {
@@ -135,7 +141,7 @@ void print_table(table data) //テーブルを表示する関数
     std::cout << "|";
     for (int j = 0; j < data.width(); j++)
     {
-      data.at(i).at(j) ? std::cout << "■" : std::cout << "-";
+      data.at(i).at(j) ? std::cout << "■" : std::cout << " ";
     }
     std::cout << "|" << std::endl;
   }
@@ -147,7 +153,7 @@ void print_table(table data) //テーブルを表示する関数
   return;
 }
 
-table next_gen(table data) //次世代の盤面を作る
+table next_gen(table &data) //次世代の盤面を作る、元配列をコピー
 {
   table data_n = data;
   for (int y = 0; y < data.height(); y++)
