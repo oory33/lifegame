@@ -131,6 +131,7 @@ bool dead_or_alive(table &data, int x, int y) //周囲のセルを探査し、�
 
 void print_table(table &data) //テーブルを表示する関数、元配列を参照
 {
+  std::system("clear");
   for (int i = 0; i < data.width() + 2; i++)
   {
     std::cout << "-";
