@@ -1,0 +1,10 @@
+{
+  "files.associations": {
+    ".*lintrc": "json",
+    "ostream": "cpp",
+    "utility": "cpp",
+    "vector": "cpp",
+    "bitset": "cpp"
+  },
+  "C_Cpp.errorSquiggles": "Disabled"
+}
